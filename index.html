@@ -3,248 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathe-Trainer: Analysis Extremstellen</title>
+    <title>Mathe-Trainer: Extremstellen Profi</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f2f5;
-        }
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
-        .task-box {
-            font-size: 1.6em;
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 20px 0;
-            border: 1px solid #dee2e6;
-            border-left: 10px solid #3498db;
-        }
-        .controls { text-align: center; margin-bottom: 30px; }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1.1em;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 5px;
-            transition: background 0.2s;
-        }
-        button:hover { background-color: #2980b9; }
-        .solution-section {
-            margin-top: 30px;
-            display: none;
-            padding: 20px;
-            background-color: #ffffff;
-            border-top: 2px dashed #bdc3c7;
-        }
-        .step { font-weight: bold; color: #2980b9; margin-top: 25px; margin-bottom: 10px; }
-        .table-wrapper {
-            margin: 20px 0;
-            overflow-x: auto;
-            text-align: center;
-        }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; max-width: 1100px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        .container { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { color: #1a5276; text-align: center; border-bottom: 4px solid #1a5276; padding-bottom: 10px; }
+        .level-selector { text-align: center; margin-bottom: 20px; }
+        .level-btn { padding: 10px 20px; margin: 0 5px; border: 2px solid #1a5276; background: white; color: #1a5276; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .level-btn.active { background: #1a5276; color: white; }
+        .task-box { font-size: 1.8em; background: #fff; padding: 30px; border-radius: 10px; text-align: center; margin: 20px 0; border: 2px solid #1a5276; min-height: 1.5em; }
+        .controls { text-align: center; margin: 20px 0; }
+        button.action-btn { background: #2c3e50; color: white; border: none; padding: 12px 28px; font-size: 1.1em; border-radius: 6px; cursor: pointer; margin: 5px; }
+        .solution-section { display: none; margin-top: 30px; padding: 20px; border-top: 2px dashed #bdc3c7; background: #fff; }
+        .step { font-weight: bold; color: #1a5276; margin-top: 25px; border-left: 5px solid #1a5276; padding-left: 10px; }
+        .table-wrapper { margin: 25px 0; overflow-x: auto; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Analysis: Extremstellen bestimmen</h1>
-    <p>Leite die Funktion ab, faktorisiere sie und bestimme die Art der Extremstellen mit einer Vorzeichentabelle.</p>
+    <h1>Analysis: Extremstellen Trainer</h1>
     
-    <div id="task" class="task-box">Lade Aufgabe...</div>
+    <div class="level-selector">
+        <button class="level-btn active" id="btnL1" onclick="setLevel(1)">Level 1 (h linear)</button>
+        <button class="level-btn" id="btnL2" onclick="setLevel(2)">Level 2 (h quadratisch)</button>
+    </div>
+
+    <div id="task" class="task-box">$$
+...
+$$</div>
 
     <div class="controls">
-        <button onclick="generateTask()">Neue Aufgabe</button>
-        <button onclick="toggleSolution()" id="toggleBtn" style="background-color: #7f8c8d;">Lösung anzeigen</button>
+        <button class="action-btn" onclick="generateTask()">Neue Aufgabe</button>
+        <button class="action-btn" id="toggleBtn" onclick="toggleSolution()" style="background-color: #7f8c8d;">Lösung anzeigen</button>
     </div>
 
     <div id="solution" class="solution-section">
-        <div class="step">1. Ableitung bilden (Produkt- und Kettenregel):</div>
+        <div class="step">1. Erste Ableitung:</div>
         <div id="deriv-step"></div>
-
-        <div class="step">2. Faktorisierte Form der Ableitung:</div>
+        <div class="step">2. Faktorisierte Form:</div>
         <div id="factored-step"></div>
-
         <div class="step">3. Nullstellen von \( f'(x) \):</div>
         <div id="zeros-step"></div>
-
-        <div class="step">4. Vorzeichentabelle:</div>
+        <div class="step">4. Vorzeichentabelle (VZT):</div>
         <div class="table-wrapper" id="latex-table"></div>
-
-        <div class="step">5. Klassifizierung:</div>
+        <div class="step">5. Ergebnis:</div>
         <div id="result-step"></div>
     </div>
 </div>
 
 <script>
-    let currentData = {};
+    let currentLevel = 1, currentData = {};
 
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+    function setLevel(l) {
+        currentLevel = l;
+        document.getElementById('btnL1').classList.toggle('active', l === 1);
+        document.getElementById('btnL2').classList.toggle('active', l === 2);
+        generateTask();
     }
 
-    // Präzise Bereinigung mathematischer Ausdrücke
+    function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
     function cleanMath(str) {
-        return str
-            .replace(/--/g, "+")
-            .replace(/\+-/g, "-")
-            .replace(/-\+/g, "-")
-            .replace(/\{1\}x/g, "{x}")
-            .replace(/\{-1\}x/g, "{-x}")
-            .replace(/([^\d])1x/g, "$1x") // 1x -> x, aber nicht bei 11x
-            .replace(/^1x/g, "x")
-            .replace(/\(1\)/g, "")        
-            .replace(/\+0/g, "")
-            .replace(/-0/g, "")
-            .replace(/\\cdot 1(?!\d)/g, "") // Mal 1 entfernen
-            .replace(/\\cdot\s*([\+\-])/g, "\\cdot ($1") // Verhindert \cdot - ohne Klammer
-            .replace(/\\cdot\s*\(/g, "\\cdot ("); 
+        return str.replace(/--/g, "+").replace(/\+-/g, "-").replace(/-\+/g, "-")
+            .replace(/\{1\}x/g, "{x}").replace(/\{-1\}x/g, "{-x}")
+            .replace(/([^\d])1x/g, "$1x").replace(/^1x/g, "x")
+            .replace(/\\cdot 1(?!\d)/g, "").replace(/\\cdot\s*([\+\-])/g, "\\cdot ($1")
+            .replace(/\\cdot\s*\(/g, "\\cdot (");
     }
 
     function formatPoly(a, b, c) {
         let terms = [];
-        if (a !== 0) {
-            let sA = a === 1 ? "" : (a === -1 ? "-" : a);
-            terms.push(sA + "x^2");
-        }
-        if (b !== 0) {
-            let sB = b === 1 ? "+" : (b === -1 ? "-" : (b > 0 ? "+" + b : b));
-            terms.push(sB + "x");
-        }
-        if (c !== 0) {
-            terms.push(c > 0 ? "+" + c : c);
-        }
+        if (a !== 0) terms.push((a === 1 ? "" : (a === -1 ? "-" : a)) + "x^2");
+        if (b !== 0) terms.push((b > 0 ? "+" : "") + (b === 1 ? "" : (b === -1 ? "-" : b)) + "x");
+        if (c !== 0) terms.push((c > 0 ? "+" : "") + c);
         let res = terms.join("");
         if (res.startsWith("+")) res = res.substring(1);
         return res || "0";
     }
 
     function formatLinearFactor(x0) {
-        if (x0 === 0) return "x";
-        return x0 < 0 ? `(x + ${Math.abs(x0)})` : `(x - ${x0})`;
+        return x0 === 0 ? "x" : (x0 < 0 ? `(x + ${Math.abs(x0)})` : `(x - ${x0})`);
     }
 
     function generateTask() {
         document.getElementById('solution').style.display = 'none';
         document.getElementById('toggleBtn').innerText = "Lösung anzeigen";
         
-        let x1 = getRandomInt(-4, 1);
-        let x2 = x1 + getRandomInt(1, 4);
-        let k = getRandomInt(0, 1) === 0 ? 1 : -1; 
+        if (currentLevel === 1) {
+            let x1 = getRandomInt(-4, 0), x2 = x1 + getRandomInt(1, 4), k = getRandomInt(0, 1) === 0 ? 1 : -1, p = getRandomInt(0, 1) === 0 ? 1 : -1;
+            let a = k/p, b = ((-k*(x1+x2)) - 2*a)/p, c = ((k*x1*x2) - b)/p;
+            currentData = { a, b, c, p, q: getRandomInt(-2, 2), roots: [x1, x2], k, isLevel2: false };
+        } else {
+            let z = [2, 3][getRandomInt(0, 1)];
+            currentData = { a: 1, b: 0, c: (z*z - 4), p: -0.5, q: getRandomInt(-2, 2), roots: [-z, 0, z], k: -1, isLevel2: true };
+        }
         
-        let A = k;
-        let B = -k * (x1 + x2);
-        let C = k * x1 * x2;
-
-        let p = getRandomInt(0, 1) === 0 ? 1 : -1;
-        let q = getRandomInt(-2, 2);
-
-        let a = A / p;
-        let b = (B - 2*a) / p;
-        let c = (C - b) / p;
-
-        currentData = { a, b, c, p, q, x1, x2, k, A, B, C };
-
-        const funcTex = cleanMath(`f(x) = (${formatPoly(a, b, c)}) \\cdot e^{${formatPoly(0, p, q)}}`);
+        const d = currentData;
+        const hTex = d.isLevel2 ? formatPoly(d.p, 0, d.q) : formatPoly(0, d.p, d.q);
         document.getElementById('task').innerHTML = `$$
-${funcTex}
+f(x) = (${formatPoly(d.a, d.b, d.c)}) \\cdot e^{${hTex}}
 $$`;
-        
         renderSolution();
-        MathJax.typeset();
+        if (window.MathJax) MathJax.typesetPromise();
     }
 
     function renderSolution() {
-        const d = currentData;
-        const expT = `e^{${formatPoly(0, d.p, d.q)}}`;
-        
-        // Ableitung sauber formatiert: g'(x)e^h(x) +/- g(x)e^h(x)
-        const signChain = d.p === 1 ? "+" : "-";
-        const derivRaw = `f'(x) = (${formatPoly(0, 2*d.a, d.b)}) \\cdot ${expT} ${signChain} (${formatPoly(d.a, d.b, d.c)}) \\cdot ${expT}`;
+        const d = currentData, r = d.roots, expT = `e^{${d.isLevel2 ? formatPoly(d.p, 0, d.q) : formatPoly(0, d.p, d.q)}}`;
+        const plus = "\\color{green}{+}", minus = "\\color{red}{-}", vK = d.k > 0 ? plus : minus;
+
         document.getElementById('deriv-step').innerHTML = `$$
-${cleanMath(derivRaw)}
+f'(x) = ${d.isLevel2 ? `(2x) \\cdot ${expT} + (${formatPoly(d.a, 0, d.c)}) \\cdot ${expT} \\cdot (-x)` : `(${formatPoly(0, 2*d.a, d.b)}) \\cdot ${expT} + (${formatPoly(d.a, d.b, d.c)}) \\cdot ${expT} \\cdot (${d.p})`}
 $$`;
-
-        // Faktorisierte Form
-        const factoredRaw = `f'(x) = ${expT} \\cdot [${formatPoly(d.A, d.B, d.C)}] = ${expT} \\cdot ${d.k === 1 ? "" : "-"}${formatLinearFactor(d.x1)}${formatLinearFactor(d.x2)}`;
         document.getElementById('factored-step').innerHTML = `$$
-${cleanMath(factoredRaw)}
+f'(x) = ${expT} \\cdot [ ${d.isLevel2 ? `-x^3 + ${r[2]*r[2]}x` : formatPoly(d.k, d.k*-(r[0]+r[1]), d.k*r[0]*r[1])} ] = ${expT} \\cdot [ ${d.k < 0 ? "-" : ""}${r.map(formatLinearFactor).join(" \\cdot ")} ]
 $$`;
-
         document.getElementById('zeros-step').innerHTML = `$$
-f'(x) = 0 \\iff x_1 = ${d.x1}, \\, x_2 = ${d.x2}
+f'(x) = 0 \\iff ${r.map((rt, i) => `x_${i+1} = ${rt}`).join(", ")}
 $$`;
 
-        // Vorzeichen-Symbole
-        const plus = "\\color{green}{+}";
-        const minus = "\\color{red}{-}";
-        const getVTot = (x) => {
-            let v = d.k * (x - d.x1) * (x - d.x2);
-            return v > 0 ? plus : (v < 0 ? minus : "0");
+        let latex = `$$
+\\begin{array}{c|c|`;
+        for(let i=0; i<r.length*2 + 1; i++) latex += "c|";
+        latex += `c} x & -\\infty & -\\infty < x < ${r[0]} & ${r[0]} `;
+        for(let i=0; i<r.length-1; i++) latex += ` & ${r[i]} < x < ${r[i+1]} & ${r[i+1]} `;
+        latex += ` & ${r[r.length-1]} < x < \\infty & +\\infty \\\\ \\hline `;
+
+        const fillRow = (label, signFunc) => {
+            let row = label + ` & ${signFunc(r[0]-10)} `; 
+            row += ` & ${signFunc(r[0]-0.5)} & ${signFunc(r[0])} `; 
+            for(let i=0; i<r.length-1; i++) {
+                row += ` & ${signFunc((r[i]+r[i+1])/2)} & ${signFunc(r[i+1])} `;
+            }
+            row += ` & ${signFunc(r[r.length-1]+0.5)} & ${signFunc(r[r.length-1]+10)} \\\\ `;
+            return row;
         };
 
-        // Tabelle bauen
-        let latex = `$$
-\\begin{array}{c|c|c|c|c|c} `;
-        latex += `x & x < ${d.x1} & ${d.x1} & ${d.x1} < x < ${d.x2} & ${d.x2} & x > ${d.x2} \\\\ \\hline `;
-        latex += `${expT} & ${plus} & ${plus} & ${plus} & ${plus} & ${plus} \\\\ `;
-        
-        const f1Label = (d.k === 1 ? "" : "-") + formatLinearFactor(d.x1);
-        const v1 = (x) => (d.k * (x - d.x1)) > 0 ? plus : minus;
-        latex += `${f1Label} & ${v1(d.x1-0.5)} & 0 & ${v1(d.x1+0.5)} & ${v1(d.x2+0.5)} & ${v1(d.x2+0.5)} \\\\ `;
+        latex += fillRow(expT, () => plus);
+        latex += fillRow(`${d.k}`, () => vK);
+        r.forEach(rt => {
+            latex += fillRow(formatLinearFactor(rt), (x) => x < rt ? minus : (x === rt ? "0" : plus));
+        });
 
-        const f2Label = formatLinearFactor(d.x2);
-        const v2 = (x) => (x - d.x2) > 0 ? plus : minus;
-        latex += `${f2Label} & ${v2(d.x1-0.5)} & ${v2(d.x1+0.5)} & ${v2(d.x1+0.5)} & 0 & ${v2(d.x2+0.5)} \\\\ \\hline `;
+        latex += ` \\hline f'(x) `;
+        const getTotSign = (x) => {
+            let val = d.k; r.forEach(rt => val *= (x-rt));
+            return val > 0 ? plus : (val < 0 ? minus : "0");
+        };
+        latex += ` & ${getTotSign(r[0]-10)} & ${getTotSign(r[0]-0.5)} & 0 `;
+        for(let i=0; i<r.length-1; i++) latex += ` & ${getTotSign((r[i]+r[i+1])/2)} & 0 `;
+        latex += ` & ${getTotSign(r[r.length-1]+0.5)} & ${getTotSign(r[r.length-1]+10)} \\\\ \\hline G_f & `;
 
-        latex += `f'(x) & ${getVTot(d.x1-0.5)} & 0 & ${getVTot(d.x1+0.5)} & 0 & ${getVTot(d.x2+0.5)} \\\\ \\hline `;
+        let results = [];
+        latex += ` & ${getTotSign(r[0]-0.5) === plus ? "\\nearrow" : "\\searrow"} `;
+        r.forEach(rt => {
+            let type = getTotSign(rt-0.1) === plus ? "HP" : "TP";
+            results.push(`<b>${type} bei x = ${rt}</b>`);
+            latex += ` & \\text{${type}} & ${getTotSign(rt+0.1) === plus ? "\\nearrow" : "\\searrow"} `;
+        });
 
-        const m1 = getVTot(d.x1-0.5) === plus ? "\\nearrow" : "\\searrow";
-        const m2 = getVTot(d.x1+0.5) === plus ? "\\nearrow" : "\\searrow";
-        const m3 = getVTot(d.x2+0.5) === plus ? "\\nearrow" : "\\searrow";
-        const ex1 = m1 === "\\nearrow" ? "HP" : "TP";
-        const ex2 = m2 === "\\nearrow" ? "HP" : "TP";
-
-        latex += `G_f & ${m1} & \\text{${ex1}} & ${m2} & \\text{${ex2}} & ${m3} `;
-        latex += `\\end{array}
+        latex += ` & \\end{array}
 $$`;
-
         document.getElementById('latex-table').innerHTML = cleanMath(latex);
-        document.getElementById('result-step').innerHTML = `Es ergibt sich ein <b>${ex1 === 'HP' ? 'Hochpunkt' : 'Tiefpunkt'}</b> bei \( x = ${d.x1} \) und ein <b>${ex2 === 'HP' ? 'Hochpunkt' : 'Tiefpunkt'}</b> bei \( x = ${d.x2} \).`;
+        document.getElementById('result-step').innerHTML = results.join(", ");
     }
 
     function toggleSolution() {
         const sol = document.getElementById('solution');
-        const btn = document.getElementById('toggleBtn');
-        if (sol.style.display === 'none' || sol.style.display === '') {
-            sol.style.display = 'block';
-            btn.innerText = "Lösung verbergen";
-            MathJax.typeset();
-        } else {
-            sol.style.display = 'none';
-            btn.innerText = "Lösung anzeigen";
-        }
+        sol.style.display = (sol.style.display === 'none' || sol.style.display === '') ? 'block' : 'none';
+        document.getElementById('toggleBtn').innerText = sol.style.display === 'block' ? "Lösung verbergen" : "Lösung anzeigen";
+        if (sol.style.display === 'block') MathJax.typesetPromise();
     }
 
-    window.onload = generateTask;
+    window.onload = () => {
+        if (window.MathJax) MathJax.startup.promise.then(generateTask);
+        else setTimeout(generateTask, 1000);
+    };
 </script>
-
 </body>
 </html>
-
